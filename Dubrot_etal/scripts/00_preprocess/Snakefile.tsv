@@ -1,0 +1,24 @@
+# Snakefile
+
+configfile: "config.yaml"
+
+rule all:
+    input:
+        expand("database/{database}", database=[config["database"]])
+
+rule download_fasta:
+    output:
+        fasta = temp("database/{database}_rna.fna.gz")
+    params:
+        url = lambda wildcards: f"https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_{wildcards.database}/GCF_000001635.27_{wildcards.database}_rna.fna.gz"
+    shell:
+        "wget {params.url} -O {output.fasta}"
+
+rule build_kallisto_index:
+    input:
+        fasta = rules.download_fasta.output.fasta
+    output:
+        index = "database/{database}"
+    threads: config["threads"]
+    shell:
+        "kallisto index -i {output.index} --threads {threads} {input.fasta}"
