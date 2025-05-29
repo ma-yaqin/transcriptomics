@@ -9,7 +9,7 @@ METADATA="raw/metadata.tsv"
 mkdir -p raw/fastq
 
 # SRA download and conversion
-while IFS=$'\t' read -r sra_id _; do
+while IFS=$'\t' read -r sra_id _ || [[ -n "$sra_id" ]]; do
     # Skip empty lines or lines without SRA IDs
     if [[ -z "$sra_id" ]]; then
         continue
@@ -35,6 +35,8 @@ while IFS=$'\t' read -r sra_id _; do
         echo "Converting SRA to FASTQ for $sra_id"
         if fastq-dump --split-files --gzip -O raw/ raw/"$sra_id"; then
             echo "FASTQ files created for: $sra_id"
+        # Remove the original SRA file after successful conversion
+            rm -f raw/"$sra_id"
         else
             echo "Error converting SRA to FASTQ for: $sra_id" >&2
         fi
