@@ -23,6 +23,7 @@ metadata <- read_xlsx(paste0(METADIR, "dubrot_metadata.xlsx")) %>%
   mutate(cell_line = factor(cell_line, levels = c("NS", "IFNb", "IFNg")),
          replicate = factor(replicate, levels = c(1:3)))
 samnames <- metadata$SeqID
+saveRDS(metadata, paste0(RESDIR, "metadata.rds"))
 
 # abundance file
 abd_files <- file.path(paste0(PROCDIR,samnames,"/",
