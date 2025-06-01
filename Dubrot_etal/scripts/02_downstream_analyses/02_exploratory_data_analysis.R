@@ -1,7 +1,7 @@
-### TRANSCRIPT DATA IMPORT AND PREPROCESSING ####
+### EXPLORATORY DATA ANALYSIS ####
 # Date: May 29th, 2025
 # Author: MA Yaqin
-# Description: preprocess
+# Description: explore characteristics of the data
 
 #======== Libraries 
 library(tximport)

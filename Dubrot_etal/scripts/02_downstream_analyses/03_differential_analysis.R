@@ -1,7 +1,8 @@
-### TRANSCRIPT DATA IMPORT AND PREPROCESSING ####
+### DIFFERENTIAL ABUNDANCE ANALYSIS ####
 # Date: May 29th, 2025
 # Author: MA Yaqin
-# Description: preprocess
+# Description: conduct the differential abundance analysis as well as 
+# Functional enrichment analysis
 
 #======== Libraries 
 library(DESeq2)
@@ -108,14 +109,13 @@ downDE_entrez <- downDE$entrezid
 de_entrez <- list(upDE = upDE_entrez, 
                   downDE = downDE_entrez)
 # GO biological process
-GO_up <- compareCluster(upDE_entrez,
-                           universe = bg_entrez,
-                           fun = "enrichGO",
-                           OrgDb = org.Mm.eg.db,
-                           pAdjustMethod = "BH",
-                           ont = "BP",
-                           pvalueCutoff = 0.05, 
-                           qvalueCutoff = 0.05)
+GO_up <- enrichGO(upDE_entrez,
+                  universe = bg_entrez,
+                  OrgDb = "org.Mm.eg.db",
+                  pAdjustMethod = "BH",
+                  ont = "BP",
+                  pvalueCutoff = 0.05,
+                  qvalueCutoff = 0.05)
 clusterProfiler::dotplot(GO_up, font.size=10)
 
 GO_down <- enrichGO(downDE_entrez,
@@ -126,3 +126,14 @@ GO_down <- enrichGO(downDE_entrez,
                     pvalueCutoff = 0.05,
                     qvalueCutoff = 0.05)
 clusterProfiler::dotplot(GO_down, font.size=10)
+
+
+# KEGG
+KEGG_up <- enrichKEGG(gene = upDE_entrez,
+                      universe = bg_entrez,
+                      organism = "mmu",
+                      keyType = "kegg",
+                      pvalueCutoff = 0.05,
+                      pAdjustMethod = "BH",
+                      qvalueCutoff = 0.05)
+clusterProfiler::dotplot(KEGG_up, font.size=10)
