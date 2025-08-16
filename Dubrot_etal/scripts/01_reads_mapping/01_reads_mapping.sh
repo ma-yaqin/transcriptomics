@@ -1,12 +1,16 @@
 #!/bin/bash
-# READS MAPPING - trim_galore preprocessing + kallisto quantification (sequential)
+# READS MAPPING
+# trim_galore preprocessing + kallisto quantification (sequential)
 
-# PARAMS
-database="GRCm39"
+# ===== Parameters =====
+database="mm10"
+db_dir="database/${database}"
+index_file="${db_dir}/${database}_mrna.idx"
 threads=4
 log_file="kallisto_errors.log"
 summary_file="processed/kallisto_runtime_summary.tsv"
 
+# ===== Directory and logging creation =====
 # Ensure output root directory exists
 mkdir -p processed
 
@@ -14,7 +18,7 @@ mkdir -p processed
 echo -e "sample\truntime_seconds" > "$summary_file"
 > "$log_file"  # Clear log file
 
-# LOOP THROUGH ALL RAW READ PAIRS
+# ===== Mapping =====
 for r1 in raw/*_1.fastq.gz; do
   r2="${r1/_1.fastq.gz/_2.fastq.gz}"
   sample=$(basename "$r1" _1.fastq.gz)
@@ -54,7 +58,7 @@ for r1 in raw/*_1.fastq.gz; do
   echo "[$sample] Running kallisto..."
   start=$(date +%s)
 
-  if kallisto quant -i "database/$database" -o "$output_dir" -t $threads "$trimmed_r1" "$trimmed_r2" 2>>"$log_file"; then
+  if kallisto quant -i ${index_file} -o "$output_dir" -t $threads "$trimmed_r1" "$trimmed_r2" 2>>"$log_file"; then
     end=$(date +%s)
     runtime=$((end - start))
     echo -e "$sample\t$runtime" >> "$summary_file"
@@ -62,8 +66,9 @@ for r1 in raw/*_1.fastq.gz; do
 
     # Rename result files to include sample name
     for file in "$output_dir"/*; do
-      base=$(basename "$file")
-      mv "$file" "$output_dir/${sample}_${base}"
+        base=$(basename "$file")
+        [[ "$base" == ${sample}_* ]] && continue
+        mv "$file" "$output_dir/${sample}_${base}"
     done
 
     echo "[$sample] Finished in $runtime seconds."

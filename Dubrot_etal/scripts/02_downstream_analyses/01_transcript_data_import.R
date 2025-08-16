@@ -5,6 +5,7 @@
 
 #======== Libraries 
 library(tximport)
+library(GenomicFeatures)
 library(edgeR)
 library(tidyverse)
 library(readxl)
@@ -13,31 +14,35 @@ library(biomaRt)
 library(org.Mm.eg.db)
 
 #======== Parameters 
-PROCDIR <- paste0(getwd(),"/processed/")
-METADIR <- paste0(getwd(), "/metadata/")
-RESDIR <- paste0(getwd(),"/result/")
+PROCDIR <- file.path(getwd(),"processed")
+METADIR <- file.path(getwd(), "metadata")
+RESDIR <- file.path(getwd(),"result")
+
+#======== Database building
+# gene database import and preprocess
+gtf_file <- paste0(getwd(),"/database/mm10/mm10.refGene.gtf.gz")
+txdb <- makeTxDbFromGFF(gtf_file)
+k <- keys(txdb, keytype = "TXNAME")
+tx2gene <- select(txdb, keys = k, keytype = "TXNAME", columns = "GENEID")
+saveRDS(tx2gene, file.path(RESDIR, "tx2gene_mm10.rds"))
 
 #======== Data import 
 # metadata
-metadata <- read_xlsx(paste0(METADIR, "dubrot_metadata.xlsx")) %>%
-  mutate(cell_line = factor(cell_line, levels = c("NS", "IFNb", "IFNg")),
+metadata <- read_xlsx(file.path(METADIR, "dubrot_metadata.xlsx")) %>%
+  mutate(treatment = factor(treatment, levels = c("NS", "IFNg")),
          replicate = factor(replicate, levels = c(1:3)))
 samnames <- metadata$SeqID
-saveRDS(metadata, paste0(RESDIR, "metadata.rds"))
+saveRDS(metadata, file.path(RESDIR, "metadata.rds"))
 
 # abundance file
-abd_files <- file.path(paste0(PROCDIR,samnames,"/",
-                              samnames,"_abundance.tsv"))
+abd_files <- file.path(PROCDIR,samnames,
+                    paste0(samnames,"_abundance.tsv"))
 names(abd_files) <- samnames
-txi <- tximport(abd_files, type = "kallisto", txOut = TRUE)
-rownames(txi$abundance) <- gsub("\\.\\d+$", "", rownames(txi$abundance))
-rownames(txi$counts) <- gsub("\\.\\d+$", "", rownames(txi$counts))
-rownames(txi$length) <- gsub("\\.\\d+$", "", rownames(txi$length))
-saveRDS(txi, paste0(RESDIR, "transcript_abundance.rds"))
-# annotation
-tx_ids <- rownames(txi$abundance)
-tx2gene <- AnnotationDbi::select(org.Mm.eg.db,
-                                 keys = tx_ids,
-                                 keytype = "REFSEQ",
-                                 columns = c("ENSEMBL", "SYMBOL", "GENENAME"))
-saveRDS(tx2gene, paste0(RESDIR, "transcript_annotation.rds"))
+missing_files <- abd_files[!file.exists(abd_files)]
+if (length(missing_files) > 0) {
+  stop(paste("Missing abundance files for these samples:\n",
+             paste(names(missing_files), "→", missing_files, collapse = "\n")))
+}
+
+txi <- tximport(abd_files, type = "kallisto", tx2gene = tx2gene, txOut = FALSE)
+saveRDS(txi, file.path(RESDIR, "transcript_abundance.rds"))

@@ -1,15 +1,26 @@
 #!/bin/bash
 # DATABASE PREPROCESS
-# It fetches Mus musculus genome to be compared with the RNA-Seq data.
+# Downloads Mus musculus transcriptome (mm10) from UCSC and builds Kallisto index.
 
-# PARAMS
-database="GRCm39"
-db_link="https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_"$database"/GCF_000001635.27_"$database"_rna.fna.gz"
+set -euo pipefail
+
+# ===== Parameters =====
+database="mm10"
+db_link="https://hgdownload.soe.ucsc.edu/goldenPath/${database}/bigZips/refMrna.fa.gz"
+db_dir="database/${database}"
+index_file="${db_dir}/${database}_mrna.idx"
+fasta_file="${db_dir}/refMrna.fa.gz"
 threads=4
 
-# DATA FETCH
-wget $db_link 
+# ===== Create directory =====
+mkdir -p "${db_dir}"
 
-# INDEX BUILDING
-#gzip -d $database".fa.gz"
-kallisto index --index=$database --threads=$threads "GCF_000001635.27_"$database"_rna.fna.gz"
+# ===== Download =====
+echo "[INFO] Downloading ${database} transcriptome..."
+wget -c "${db_link}" -O "${fasta_file}"
+
+# ===== Build Kallisto index =====
+echo "[INFO] Building Kallisto index..."
+kallisto index -i "${index_file}" -k 31 --threads=${threads} "${fasta_file}"
+
+echo "[INFO] Index built at: ${index_file}"
