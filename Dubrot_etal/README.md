@@ -119,28 +119,19 @@ This script performs two main steps for each sample:
 bash scripts/01_reads_mapping/reads_mapping.sh
 ```
 
-Outputs per sample:
+**Outputs per sample:** </br>
+- **processed/sample/sample_abundance.tsv** – Transcript abundance estimates from Kallisto </br>
+- **processed/sample/trimmed/** – Quality-trimmed FASTQ files </br>
+- **processed/sample/sample_runtime.txt** – Runtime (in seconds) for quantification </br>
+- **processed/sample/** – Renamed Kallisto output files (prefixed with sample name) </br>
 
-processed/sample/sample_abundance.tsv – Transcript abundance estimates from Kallisto
+**Additional outputs:** </br>
+- **processed/kallisto_runtime_summary.tsv** – Summary table of runtime per sample </br>
+- **kallisto_errors.log** – Log of errors encountered during processing </br>
 
-processed/sample/trimmed/ – Quality-trimmed FASTQ files
-
-processed/sample/sample_runtime.txt – Runtime (in seconds) for quantification
-
-processed/sample/ – Renamed Kallisto output files (prefixed with sample name)
-
-Additional outputs:
-
-processed/kallisto_runtime_summary.tsv – Summary table of runtime per sample
-
-kallisto_errors.log – Log of errors encountered during processing
-
-Notes:
-
-The script automatically skips samples if results already exist.
-
-If paired FASTQ files are missing, the sample is skipped with a warning.
-
-.sra downloads are expected to be converted beforehand using the Public Data Fetch step.
+**Notes:** </br>
+- The script automatically skips samples if results already exist. </br>
+- If paired FASTQ files are missing, the sample is skipped with a warning. </br>
+- .sra downloads are expected to be converted beforehand using the Public Data Fetch step.
 
 
