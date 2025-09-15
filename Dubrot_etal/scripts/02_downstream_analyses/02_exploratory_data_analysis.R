@@ -6,8 +6,6 @@
 #======== Libraries 
 library(tximport)
 library(DESeq2)
-library(EDASeq)
-library(RUVSeq)
 library(tidyverse)
 library(ggplot2)
 library(org.Mm.eg.db)

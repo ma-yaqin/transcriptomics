@@ -172,14 +172,14 @@ for (cell in cell_list) {
   # GO biological process
   GO_up <- enrichGO(upDE_entrez,
                     universe = bg_entrez,
-                    OrgDb = "org.Mm.eg.db",
+                    OrgDb = org.Mm.eg.db,
                     pAdjustMethod = "BH",
                     ont = "BP",
                     pvalueCutoff = 0.05,
                     qvalueCutoff = 0.05)
   write_delim(as.data.frame(GO_up), 
               file.path(cell_resdir, paste0("ORA_upregulated_genes", cell, ".tsv")))
-  upora <- clusterProfiler::dotplot(GO_up, showCategory = 15, font.size=8, title = "GO BP: IFNg")
+  upora <- clusterProfiler::dotplot(GO_up, showCategory = 10, font.size=8, title = "GO BP: IFNg")
   upora
   
   GO_down <- enrichGO(downDE_entrez,
@@ -191,9 +191,10 @@ for (cell in cell_list) {
                       qvalueCutoff = 0.05)
   write_delim(as.data.frame(GO_down), 
               file.path(cell_resdir, paste0("ORA_downregulated_genes", cell, ".tsv")))
-  downora <- clusterProfiler::dotplot(GO_down, showCategory = 15, font.size=8, title = "GO BP: NS")
+  downora <- clusterProfiler::dotplot(GO_down, showCategory = 10, font.size=8, title = "GO BP: NS")
   downora
   
+  # Summarized plotting
   plot_all <- ggarrange(ggarrange(vp, dp, labels = c("A","B"),
                                   common.legend = TRUE, legend = "bottom"),
                         ggarrange(upora, downora, labels = c("C","D")),
@@ -209,17 +210,7 @@ for (cell in cell_list) {
   }
 }
 
-#======== Enrichment analysis
-common_bg <- Reduce(union, lapply(bg_list, function(x) x$entrezid))
-common_upDE <- Reduce(intersect, lapply(upDE_list, function(x) x$entrezid))
-common_GO_up <- enrichGO(common_upDE,
-                         universe = common_bg,
-                         OrgDb = "org.Mm.eg.db",
-                         pAdjustMethod = "BH",
-                         ont = "BP",
-                         pvalueCutoff = 0.05,
-                         qvalueCutoff = 0.05)
-common_upora <- clusterProfiler::dotplot(common_GO_up, 
-                                         showCategory = 15, font.size=8, 
-                                         title = "GO BP: Common IFNg")
-common_upora
+#======== Export the common genes
+saveRDS(bg_list, file.path(RESDIR, "common_bg_genes.rds"))
+saveRDS(upDE_list, file.path(RESDIR, "common_upDE_genes.rds"))
+saveRDS(downDE_list, file.path(RESDIR, "common_downDE_genes.rds"))

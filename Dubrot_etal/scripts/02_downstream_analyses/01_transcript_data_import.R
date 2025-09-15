@@ -6,7 +6,6 @@
 #======== Libraries 
 library(tximport)
 library(GenomicFeatures)
-library(edgeR)
 library(tidyverse)
 library(readxl)
 library(ggplot2)
