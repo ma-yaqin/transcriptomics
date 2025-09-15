@@ -20,11 +20,11 @@ Before running the scripts, ensure you have the following tools installed and av
 ---
 
 ## 📂 Directory Structure
-├── database/ # Reference transcriptome and Kallisto index
-├── raw/
-│ ├── metadata.tsv # Metadata file containing SRA IDs
-│ ├── fastq/ # FASTQ output directory
-│ └── *.sra # (Temporary) downloaded SRA files
+├── database/ # Reference transcriptome and Kallisto index </br>
+├── raw/ </br>
+│ ├── metadata.tsv # Metadata file containing SRA IDs </br>
+│ ├── fastq/ # FASTQ output directory </br>
+│ └── *.sra # (Temporary) downloaded SRA files </br>
 └── scripts/ # Analysis scripts
 
 
