@@ -70,7 +70,8 @@ Kallisto index → database/mm10/mm10_mrna.idx
 ---
 ### 2. Public Data Fetch
 
-**Script:** scripts/00_preprocess/public_data_fetch.sh
+**Script:** [`scripts/00_preprocess/public_data_fetch.sh`]
+(scripts/00_preprocess/public_data_fetch.sh)
 
 This script downloads RNA-seq datasets from SRA (listed in raw/metadata.tsv) and converts them into compressed FASTQ files.
 
@@ -122,13 +123,13 @@ bash scripts/01_reads_mapping/reads_mapping.sh
 
 Outputs per sample:
 
-processed/<sample>/<sample>_abundance.tsv – Transcript abundance estimates from Kallisto
+processed/sample/sample_abundance.tsv – Transcript abundance estimates from Kallisto
 
-processed/<sample>/trimmed/ – Quality-trimmed FASTQ files
+processed/sample/trimmed/ – Quality-trimmed FASTQ files
 
-processed/<sample>/<sample>_runtime.txt – Runtime (in seconds) for quantification
+processed/sample/sample_runtime.txt – Runtime (in seconds) for quantification
 
-processed/<sample>/ – Renamed Kallisto output files (prefixed with sample name)
+processed/sample/ – Renamed Kallisto output files (prefixed with sample name)
 
 Additional outputs:
 
