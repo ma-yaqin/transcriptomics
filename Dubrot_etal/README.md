@@ -53,14 +53,14 @@ Before running the scripts, ensure you have the following tools installed and av
 ## ⚡ Preparation
 ### 1. Database Preprocess
 
-**Script:** [`scripts/00_preprocess/database_preprocess.sh`](scripts/00_preprocess/database_preprocess.sh)  
+**Script:** [`scripts/00_preprocess/01_database_generation.sh`](scripts/00_preprocess/01_database_generation.sh)  
 
 This script downloads the **Mus musculus transcriptome (mm10)** reference from UCSC and builds a **Kallisto index**.
 
 **Usage:**
 
 ```bash
-bash scripts/00_preprocess/database_preprocess.sh
+bash scripts/00_preprocess/01_database_generation.sh
 ```
 Output:
 
@@ -69,9 +69,7 @@ Kallisto index → database/mm10/mm10_mrna.idx
 
 ---
 ### 2. Public Data Fetch
-
-**Script:** [`scripts/00_preprocess/public_data_fetch.sh`]
-(scripts/00_preprocess/public_data_fetch.sh)
+**Script:** [`scripts/00_preprocess/02_public_data_fetch.sh`](scripts/00_preprocess/02_public_data_fetch.sh)
 
 This script downloads RNA-seq datasets from SRA (listed in raw/metadata.tsv) and converts them into compressed FASTQ files.
 
@@ -88,7 +86,7 @@ SRR123458
 Usage:
 
 ```bash
-bash scripts/00_preprocess/public_data_fetch.sh
+bash scripts/00_preprocess/02_public_data_fetch.sh
 ```
 
 Output:
@@ -100,7 +98,7 @@ Temporary .sra files are removed automatically after conversion.
 
 ### 3. Reads Mapping & Quantification
 
-**Script:** [`scripts/01_reads_mapping/reads_mapping.sh`](scripts/01_reads_mapping/reads_mapping.sh)  
+**Script:** [`scripts/01_reads_mapping/01_reads_mapping.sh`](scripts/01_reads_mapping/01_reads_mapping.sh)  
 
 This script performs two main steps for each sample:  
 
