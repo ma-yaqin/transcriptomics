@@ -72,6 +72,54 @@ bash scripts/public_data_fetch.sh
 Output:
 
 Paired FASTQ files → raw/SRR123456_1.fastq.gz, raw/SRR123456_2.fastq.gz
-
 Temporary .sra files are removed automatically after conversion.
+
+---
+
+### 3. Reads Mapping & Quantification
+
+**Script:** [`scripts/reads_mapping.sh`](scripts/reads_mapping.sh)  
+
+This script performs two main steps for each sample:  
+
+1. **Preprocessing with Trim Galore** (adapter trimming and quality filtering).  
+2. **Quantification with Kallisto** using the previously built index.  
+
+**Workflow:**
+
+- Input: Paired-end FASTQ files from `raw/`  
+- Output:  
+  - Quantification files (`processed/<sample>/<sample>_abundance.tsv`)  
+  - Trimmed FASTQ files (`processed/<sample>/trimmed/`)  
+  - Runtime logs and error summaries  
+
+**Usage:**
+
+```bash
+bash scripts/reads_mapping.sh
+```
+
+Outputs per sample:
+
+processed/<sample>/<sample>_abundance.tsv – Transcript abundance estimates from Kallisto
+
+processed/<sample>/trimmed/ – Quality-trimmed FASTQ files
+
+processed/<sample>/<sample>_runtime.txt – Runtime (in seconds) for quantification
+
+processed/<sample>/ – Renamed Kallisto output files (prefixed with sample name)
+
+Additional outputs:
+
+processed/kallisto_runtime_summary.tsv – Summary table of runtime per sample
+
+kallisto_errors.log – Log of errors encountered during processing
+
+Notes:
+
+The script automatically skips samples if results already exist.
+
+If paired FASTQ files are missing, the sample is skipped with a warning.
+
+.sra downloads are expected to be converted beforehand using the Public Data Fetch step.
 
