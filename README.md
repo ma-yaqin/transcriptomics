@@ -58,8 +58,8 @@ A simple tab-separated file where the first column contains SRA IDs (additional 
 
 Example:
 
-SRR123456
-SRR123457
+SRR123456 </br>
+SRR123457 </br>
 SRR123458
 
 
