@@ -19,27 +19,6 @@ Before running the scripts, ensure you have the following tools installed and av
 
 ---
 
-# RNA-seq Analysis of IFNγ-stimulated Cells
-
-This repository contains scripts to perform RNA-seq analysis for studying transcriptional changes in **IFNγ-stimulated cells**. The workflow includes:
-
-1. **Database preparation** – fetching the reference transcriptome and building an index for quantification.  
-2. **Public data retrieval** – downloading SRA datasets and converting them into FASTQ files.  
-3. **Downstream analysis** – alignment-free quantification, differential expression, and biological interpretation.  
-
----
-
-## 🔧 Requirements
-
-Before running the scripts, ensure you have the following tools installed and available in your `PATH`:
-
-- [Kallisto](https://pachterlab.github.io/kallisto/) ≥ v0.48  
-- [SRA Toolkit](https://github.com/ncbi/sra-tools) (with `prefetch` and `fastq-dump`)  
-- `wget`  
-- `bash` (tested on v4+)  
-
----
-
 ## 📂 Directory Structure
 ├── database/ # Reference transcriptome and Kallisto index
 ├── raw/
@@ -61,7 +40,7 @@ This script downloads the **Mus musculus transcriptome (mm10)** reference from U
 
 ```bash
 bash scripts/database_preprocess.sh
-
+```
 Output:
 
 Reference FASTA → database/mm10/refMrna.fa.gz
@@ -74,7 +53,7 @@ Kallisto index → database/mm10/mm10_mrna.idx
 
 This script downloads RNA-seq datasets from SRA (listed in raw/metadata.tsv) and converts them into compressed FASTQ files.
 
-Metadata format (metadata.tsv):
+**Metadata format** (metadata.tsv):
 A simple tab-separated file where the first column contains SRA IDs (additional columns are ignored).
 
 Example:
@@ -88,7 +67,7 @@ Usage:
 
 ```bash
 bash scripts/public_data_fetch.sh
-
+```
 
 Output:
 
