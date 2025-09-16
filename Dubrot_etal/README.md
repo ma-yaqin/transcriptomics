@@ -200,7 +200,7 @@ The following script performs EDA (Exploratory Data Analysis), normalization QC,
 
 **Script:** [`scripts/02_downstream_analyses/02_exploratory_data_analysis.R`](scripts/02_downstream_analyses/02_exploratory_data_analysis.R) 
 
-![Normalization effect on RNA-seq data](transcriptomics/Dubrot_etal/result/Normalization%20effect%20on%20data.jpeg "Normalization effect on data")
+![Normalization effect on RNA-seq data](/result/Normalization%20effect%20on%20data.jpeg "Normalization effect on data")
 
 **Figure 2.1**: Quality control and exploratory data analysis of RNA-seq data.
 **Panel A–B**: Raw and VST-normalized transcript count distribution
