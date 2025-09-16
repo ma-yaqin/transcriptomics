@@ -12,8 +12,8 @@ The workflow includes:
 
 ## Data
 - **Source:** Publicly available RNA-seq data from SRA  
-- **Cell lines:** Three cancer cell lines  
-- **Conditions:** Control vs IFNγ stimulation  
+- **Cell lines:** Three cancer cell lines (KPC.2, CT26.2, YUMMER1.7)
+- **Conditions:** No stimulation (NS) vs IFNγ-stimulated cell lines
 
 ## Methods
 1. **Preprocessing**: Quality trimming using `Trim Galore`  
@@ -133,5 +133,66 @@ bash scripts/01_reads_mapping/reads_mapping.sh
 - The script automatically skips samples if results already exist. </br>
 - If paired FASTQ files are missing, the sample is skipped with a warning. </br>
 - .sra downloads are expected to be converted beforehand using the Public Data Fetch step.
+
+---
+## Main analysis
+### 1. Data import
+**Script:** [`scripts/02_downstream_analyses/01_transcript_data_import.R`](scripts/02_downstream_analyses/01_transcript_data_import.R)  
+
+**Database building**
+To initiate the analysis, transcript abundance were annotated with their corresponding genes using the following script
+
+```R
+#======== Database building
+# gene database import and preprocess
+gtf_file <- paste0(getwd(),"/database/mm10/mm10.refGene.gtf.gz")
+txdb <- makeTxDbFromGFF(gtf_file)
+k <- keys(txdb, keytype = "TXNAME")
+tx2gene <- select(txdb, keys = k, keytype = "TXNAME", columns = "GENEID")
+saveRDS(tx2gene, file.path(RESDIR, "tx2gene_mm10.rds"))
+```
+
+What it does:
+- Defines the path to the GTF file (mm10.refGene.gtf.gz) containing transcript annotation for mouse (mm10).
+- Creates a TxDb object (txdb) from the GTF, which allows querying transcripts, exons, and gene relationships.
+- Extracts all transcript IDs (TXNAME) as keys.
+- Uses select() to map transcript IDs (TXNAME) to gene IDs (GENEID) → this creates the tx2gene mapping.
+- Saves the mapping to result/tx2gene_mm10.rds for later use in tximport.
+
+**Metadata import**
+Next, samples are linked with their corresponding information stored in metadata. 
+
+```R
+# metadata
+metadata <- read_xlsx(file.path(METADIR, "dubrot_metadata.xlsx")) %>%
+  mutate(treatment = factor(treatment, levels = c("NS", "IFNg")),
+         replicate = factor(replicate, levels = c(1:3)))
+samnames <- metadata$SeqID
+saveRDS(metadata, file.path(RESDIR, "metadata.rds"))
+```
+
+**Abundance import**
+Finally, transcript abundance estimates were summarized at the gene level:
+
+```R
+# abundance file
+abd_files <- file.path(PROCDIR,samnames,
+                    paste0(samnames,"_abundance.tsv"))
+names(abd_files) <- samnames
+missing_files <- abd_files[!file.exists(abd_files)]
+if (length(missing_files) > 0) {
+  stop(paste("Missing abundance files for these samples:\n",
+             paste(names(missing_files), "→", missing_files, collapse = "\n")))
+}
+
+txi <- tximport(abd_files, type = "kallisto", tx2gene = tx2gene, txOut = FALSE)
+saveRDS(txi, file.path(RESDIR, "transcript_abundance.rds"))
+```
+What it does:
+- Imports Kallisto abundance files using the tximport package.
+- Converts transcript-level quantifications into gene-level counts and abundance using the tx2gene mapping created earlier.
+- Uses txOut = FALSE to ensure results are summarized by gene rather than transcript.
+- Saves the imported data to result/transcript_abundance.rds for downstream analyses (e.g., DESeq2).
+
 
 
