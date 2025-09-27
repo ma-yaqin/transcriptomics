@@ -134,6 +134,10 @@ bash scripts/01_reads_mapping/reads_mapping.sh
 - If paired FASTQ files are missing, the sample is skipped with a warning. </br>
 - .sra downloads are expected to be converted beforehand using the Public Data Fetch step.
 
+One interesting note is the fast runtime of kallisto on my personal computer (MacBook Pro M1, 8 CPU cores, 8 GB RAM). From **Figure 1**, we can see that the runtime remains under 30 seconds across all tested datasets. Although the runtime approximately doubles when the number of reads increases by an order of magnitude (10×), the overall performance is still remarkably fast.
+![kallisto_runtime_vs_reads.png](result/kallisto_runtime_vs_reads.png "Kallisto runtime vs number of reads")
+**Figure 1**: Linear regression showing the correlation between kallisto pseudoalignment runtime (seconds, Y-axis) and the number of reads (log10 scale, X-axis).
+
 ---
 ## Main analysis
 ### 1. Data import
@@ -367,7 +371,7 @@ This script performs exploratory data analysis (EDA) and quality control of RNA-
 6. Combined visualization: Produces multi-panel figures summarizing raw vs. normalized counts and PCA results.
 7. Output formats: Figures saved in PNG, JPEG, and TIFF for reporting.
 
-**Additional per-cell line analysis**
+**Additional per-cell line analysis** </br>
 This part of the script performs cell line-specific exploratory analyses to better understand the transcriptional variation within each cell line:
 1. Subset normalized data: For each unique cell_line, a subset of VST-normalized expression data is created.
 2. PCA within each cell line:
