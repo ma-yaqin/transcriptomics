@@ -13,6 +13,7 @@ library(biomaRt)
 library(org.Mm.eg.db)
 
 #======== Parameters 
+# directories
 PROCDIR <- file.path(getwd(),"processed")
 METADIR <- file.path(getwd(), "metadata")
 RESDIR <- file.path(getwd(),"result")

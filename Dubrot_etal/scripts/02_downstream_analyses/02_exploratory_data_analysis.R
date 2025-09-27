@@ -112,9 +112,10 @@ rleaf
 
 #======== PCA from normalized data
 pca_data <- plotPCA(vsd, intgroup = "treatment", returnData = TRUE)
+pca_data$cell_line <- colData(dds)$cell_line
 percentVar <- round(100 * attr(pca_data, "percentVar"))
 
-pca_after <- ggplot(pca_data, aes(x = PC1, y = PC2, col = treatment, pch = treatment)) +
+pca_after <- ggplot(pca_data, aes(x = PC1, y = PC2, col = treatment, pch = cell_line)) +
   geom_point(size = 4) +
   theme_minimal() +
   scale_color_brewer(palette = "Dark2") +

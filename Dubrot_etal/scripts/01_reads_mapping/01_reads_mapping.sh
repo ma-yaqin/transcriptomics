@@ -57,11 +57,19 @@ for r1 in raw/*_1.fastq.gz; do
   # Run kallisto quant
   echo "[$sample] Running kallisto..."
   start=$(date +%s)
-
   if kallisto quant -i ${index_file} -o "$output_dir" -t $threads "$trimmed_r1" "$trimmed_r2" 2>>"$log_file"; then
     end=$(date +%s)
     runtime=$((end - start))
-    echo -e "$sample\t$runtime" >> "$summary_file"
+
+    # Parse n_processed from JSON
+    run_info="${output_dir}/run_info.json"
+    if [[ -f "$run_info" ]]; then
+      n_processed=$(jq '.n_processed' "$run_info")
+    else
+      n_processed="NA"
+    fi
+
+    echo -e "$sample\t$n_processed\t$runtime" >> "$summary_file"
     echo "$runtime seconds" > "${output_dir}/${sample}_runtime.txt"
 
     # Rename result files to include sample name
