@@ -186,7 +186,7 @@ up_rpaora <- dotplot(compRPA, showCategory = 10)
 up_rpaora
 for (n in c("png", "jpeg", "tiff")) {
   ggsave(plot = up_rpaora,
-         filename = file.path(RESDIR, paste0("Upregulated genes Reactome pathways dotplot.", n)),
+         filename = file.path(RESDIR, paste0("Upregulated_genes_Reactome_pathways_dotplot.", n)),
          width = 12, height = 12, units = "in",
          device = n)  
   
@@ -199,7 +199,7 @@ rpa_map <- emapplot(compRPA_pairwise)
 rpa_map
 for (n in c("png", "jpeg", "tiff")) {
   ggsave(plot = rpa_map,
-         filename = file.path(RESDIR, paste0("Upregulated genes Reactome pathways map.", n)),
+         filename = file.path(RESDIR, paste0("Upregulated_genes_Reactome_pathways_map.", n)),
          width = 8, height = 8, units = "in",
          device = n)  
   
