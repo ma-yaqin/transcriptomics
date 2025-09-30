@@ -103,7 +103,8 @@ fdr_legend <- Legend(labels = c("FDR < 0.001", "FDR < 0.05", "FDR < 0.1"),
                      title = "Significance")
 
 # Draw heatmap with custom legend
-draw(ht, annotation_legend_list = list(fdr_legend))
+heatmap <- draw(ht, annotation_legend_list = list(fdr_legend))
+
 
 #======== Cluster comparison
 # Background gene list
@@ -183,7 +184,34 @@ compRPA <- compareCluster(geneCluster = upDE_gene_list,
                            pvalueCutoff = 0.05)
 up_rpaora <- dotplot(compRPA, showCategory = 10)
 up_rpaora
+for (n in c("png", "jpeg", "tiff")) {
+  ggsave(plot = up_rpaora,
+         filename = file.path(RESDIR, paste0("Upregulated genes Reactome pathways dotplot.", n)),
+         width = 12, height = 12, units = "in",
+         device = n)  
+  
+}
+
 
 # emapplot
 compRPA_pairwise <- pairwise_termsim(compRPA)
-emapplot(compRPA_pairwise)
+rpa_map <- emapplot(compRPA_pairwise)
+rpa_map
+for (n in c("png", "jpeg", "tiff")) {
+  ggsave(plot = rpa_map,
+         filename = file.path(RESDIR, paste0("Upregulated genes Reactome pathways map.", n)),
+         width = 8, height = 8, units = "in",
+         device = n)  
+  
+}
+
+
+# common plot
+p <- ggarrange(up_rpaora, rpa_map, ncol = 2, labels = c("A","B"))
+for (n in c("png", "jpeg", "tiff")) {
+  ggsave(plot = p,
+         filename = file.path(RESDIR, paste0("Upregulated genes Reactome pathways.", n)),
+         width = 12, height = 12, units = "in",
+         device = n)  
+  
+}
